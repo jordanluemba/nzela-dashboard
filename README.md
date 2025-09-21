@@ -32,7 +32,7 @@ Nzela Dashboard est une application web moderne conçue pour la gestion et la vi
 3. Lancer un serveur local (ex : Live Server) pour profiter des fonctionnalités PWA et de la carte.
 
 ## Auteur
-Jordan Luemba
+Jordane Luemba
 
 ## Licence
 Ce projet est open-source sous licence MIT.
