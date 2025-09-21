@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Signalements - Dashboard NZELA</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+        }
+    </script>
+</head>
+<body id="mainBody" class="bg-white dark:bg-gray-900 min-h-screen">
+    <div id="header-container"></div>
+    <main class="flex flex-col md:flex-row w-full min-h-screen bg-white dark:bg-gray-900 transition-colors">
+        <div id="sidebar-container"></div>
+        <section class="flex-1 p-6 overflow-x-auto">
+            <h1 class="text-2xl font-bold mb-6 text-black dark:text-white">Signalements</h1>
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow p-6 mb-8">
+                <h2 class="text-xl font-semibold mb-4 text-black dark:text-white">Tableau des signalements avec filtres</h2>
+                <div class="flex flex-wrap gap-4 mb-4">
+                    <select class="border rounded px-3 py-2 dark:bg-gray-900 dark:text-white">
+                        <option class="dark:text-white">Catégorie</option>
+                        <option class="dark:text-white">Route</option>
+                        <option class="dark:text-white">Caniveau</option>
+                        <option class="dark:text-white">Déchets</option>
+                        <option class="dark:text-white">Autre</option>
+                    </select>
+                    <select class="border rounded px-3 py-2 dark:bg-gray-900 dark:text-white">
+                        <option class="dark:text-white">Statut</option>
+                        <option class="dark:text-white">Signalé</option>
+                        <option class="dark:text-white">En cours</option>
+                        <option class="dark:text-white">Résolu</option>
+                        <option class="dark:text-white">Rejeté</option>
+                    </select>
+                    <input type="text" class="border rounded px-3 py-2 dark:bg-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-200" placeholder="Commune / Ville">
+                    <input type="date" class="border rounded px-3 py-2 dark:bg-gray-900 dark:text-white">
+                </div>
+                <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                    <thead>
+                        <tr class="bg-gray-100 dark:bg-gray-800">
+                            <th class="px-4 py-2 text-left text-black dark:text-white">Catégorie</th>
+                            <th class="px-4 py-2 text-left text-black dark:text-white">Statut</th>
+                            <th class="px-4 py-2 text-left text-black dark:text-white">Commune / Ville</th>
+                            <th class="px-4 py-2 text-left text-black dark:text-white">Date</th>
+                            <th class="px-4 py-2 text-left text-black dark:text-white">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="dark:text-white">
+                            <td class="px-4 py-2 dark:text-white">Route</td>
+                            <td class="px-4 py-2 dark:text-white">Signalé</td>
+                            <td class="px-4 py-2 dark:text-white">Gombe</td>
+                            <td class="px-4 py-2 dark:text-white">2025-09-21</td>
+                            <td class="px-4 py-2 flex gap-2">
+                                <button class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600" onclick="showDetails()">Voir détails</button>
+                                <select class="border rounded px-2 py-1 dark:bg-gray-900 dark:text-white">
+                                    <option class="dark:text-white">Signalé</option>
+                                    <option class="dark:text-white">En cours</option>
+                                    <option class="dark:text-white">Résolu</option>
+                                    <option class="dark:text-white">Rejeté</option>
+                                </select>
+                                <button class="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600">Assigner</button>
+                            </td>
+                        </tr>
+                        <!-- Autres lignes dynamiques -->
+                    </tbody>
+                </table>
+            </div>
+            <!-- Modal détails signalement -->
+            <div id="detailsModal" class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 hidden">
+                <div class="bg-white dark:bg-gray-900 rounded-xl shadow-lg p-6 w-full max-w-md">
+                    <h3 class="text-lg font-bold mb-2 text-black dark:text-white">Détails du signalement</h3>
+                    <img src="assets/img/signalement.jpg" alt="Photo" class="w-full h-48 object-cover rounded mb-4">
+                    <p class="mb-2 text-black dark:text-white">Description du problème...</p>
+                    <p class="mb-2 text-black dark:text-white">Position GPS: -4.325, 15.312</p>
+                    <button onclick="closeDetails()" class="mt-4 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Fermer</button>
+                </div>
+            </div>
+        </section>
+    </main>
+    <script type="module" src="../assets/js/main.js"></script>
+    <script>
+        // Injection header/aside
+        import('../assets/js/header.js').then(m => m.injectHeader && m.injectHeader());
+        import('../assets/js/sidebarComponent.js').then(m => m.injectSidebar && m.injectSidebar());
+        // Modal logic
+        window.showDetails = function() {
+            document.getElementById('detailsModal').classList.remove('hidden');
+        }
+        window.closeDetails = function() {
+            document.getElementById('detailsModal').classList.add('hidden');
+        }
+        // Système de mode sombre/clair (référence index.html)
+        function setTheme(mode) {
+            const body = document.getElementById('mainBody');
+            if (mode === 'dark') {
+                body.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
+            } else {
+                body.classList.remove('dark');
+                localStorage.setItem('theme', 'light');
+            }
+        }
+        // Initialisation du thème
+        (function() {
+            const saved = localStorage.getItem('theme');
+            if (saved === 'dark') setTheme('dark');
+            else setTheme('light');
+        })();
+    </script>
+</body>
+</html>

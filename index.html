@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+	<link rel="manifest" href="manifest.json">
+	<meta name="theme-color" content="#14b8a6">
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Accueil - Dashboard NZELA</title>
+	<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+	<script src="https://cdn.tailwindcss.com"></script>
+	<script>
+		tailwind.config = {
+			darkMode: 'class',
+		}
+	</script>
+	<style>
+		#map { min-height: 400px; }
+		.leaflet-control-attribution {
+			background: rgba(255,255,255,0.7) !important;
+		}
+	</style>
+	<style>
+		#splash {
+			position: fixed;
+			top: 0; left: 0; right: 0; bottom: 0;
+			background: #fff;
+			z-index: 9999;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+		}
+		#splash img.logo-animate {
+			width: 240px;
+			height: 120px;
+			object-fit: contain;
+			margin-bottom: 2rem;
+			animation: splashLogoAnim 1.2s cubic-bezier(.68,-0.55,.27,1.55) infinite alternate;
+		}
+		#splash img.footer-animate {
+			animation: splashFooterAnim 1.2s ease-in-out infinite alternate;
+		}
+		@keyframes splashLogoAnim {
+			0% { transform: scale(1) rotate(-2deg); filter: brightness(1); }
+			100% { transform: scale(1.08) rotate(2deg); filter: brightness(1.15); }
+		}
+		@keyframes splashFooterAnim {
+			0% { transform: scale(1) rotate(0deg); filter: brightness(1); }
+			100% { transform: scale(1.12) rotate(-3deg); filter: brightness(1.1); }
+		}
+        
+	</style>
+</head>
+<body id="mainBody" class="bg-white dark:bg-gray-900 min-h-screen">
+	<div id="splash">
+	<img src="assets/img/logoNzela.png" alt="Logo NZELA" class="logo-animate">
+		<div style="text-align:center;margin-top:1rem;font-size:1rem;color:#222;font-weight:500;line-height:1.4;">
+			Tableau de bord <br>
+			de l'application de signalement citoyen <br>
+			et gestion intelligente des routes, <br>
+			infrastructures en RDC
+		</div>
+		<div style="position:absolute;left:0;right:0;bottom:2rem;display:flex;justify-content:center;width:100%;">
+			<img src="assets/img/min.png" alt="Footer" style="width:180px;height:auto;border-radius:1rem;box-shadow:0 4px 16px rgba(253, 252, 252, 0.12);" class="footer-animate">
+		</div>
+	</div>
+	<div id="header-container"></div>
+	<main class="flex flex-col md:flex-row w-full h-[calc(100vh-64px)] bg-white dark:bg-gray-900 transition-colors">
+		<div id="sidebar-container"></div>
+		<section class="flex-1 p-6 overflow-y-auto">
+			<!-- Statistiques rapides -->
+			<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+				<div class="bg-white dark:bg-gray-800 rounded-xl shadow p-6 flex flex-col items-center">
+					<div class="text-3xl font-bold text-blue-600 dark:text-blue-400">245</div>
+					<div class="text-gray-700 dark:text-gray-300 mt-2">Signalements totaux</div>
+				</div>
+				<div class="bg-white dark:bg-gray-800 rounded-xl shadow p-6 flex flex-col items-center">
+					<div class="text-3xl font-bold text-green-600 dark:text-green-400">82%</div>
+					<div class="text-gray-700 dark:text-gray-300 mt-2">% résolus</div>
+				</div>
+				<div class="bg-white dark:bg-gray-800 rounded-xl shadow p-6 flex flex-col items-center">
+					<div class="text-3xl font-bold text-purple-600 dark:text-purple-400">Kinshasa</div>
+					<div class="text-gray-700 dark:text-gray-300 mt-2">Commune la plus signalée</div>
+				</div>
+			</div>
+
+			<!-- Carte interactive -->
+			<div class="bg-white dark:bg-gray-800 rounded-xl shadow p-4 mb-8">
+				<h2 class="text-xl font-bold mb-4 text-black dark:text-white">Carte interactive des signalements</h2>
+				<div id="map" class="w-full h-[400px] rounded-lg"></div>
+				<div class="mt-4">
+					<h3 class="text-md font-semibold mb-2 text-black dark:text-white">Marqueurs ajoutés</h3>
+					<ul id="marker-list" class="space-y-2 text-black dark:text-white text-sm"></ul>
+				</div>
+			</div>
+
+			<!-- Signalements récents -->
+			<div class="bg-white dark:bg-gray-800 rounded-xl shadow p-4">
+				<h2 class="text-xl font-bold mb-4 text-black dark:text-white">Signalements récents</h2>
+				<ul class="divide-y divide-gray-200 dark:divide-gray-700">
+					<li class="py-3 flex items-center gap-4">
+						<span class="inline-block w-8 h-8 bg-red-100 dark:bg-red-900 rounded-full flex items-center justify-center"><svg class="w-5 h-5 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 9v2m0 4h.01"/><path d="M10.29 3.86a1 1 0 011.42 0l7.13 7.13a1 1 0 01.21 1.09l-2.12 7.07A1 1 0 0116 20H8a1 1 0 01-.93-.65l-2.12-7.07a1 1 0 01.21-1.09l7.13-7.13z"/></svg></span>
+						<span class="flex-1">
+							<span class="font-semibold text-black dark:text-white">Panne d'éclairage public</span>
+							<span class="block text-xs text-gray-500 dark:text-gray-400">Gombe • il y a 2h</span>
+						</span>
+						<span class="text-xs text-green-600 dark:text-green-400 font-bold">Résolu</span>
+					</li>
+					<li class="py-3 flex items-center gap-4">
+						<span class="inline-block w-8 h-8 bg-yellow-100 dark:bg-yellow-900 rounded-full flex items-center justify-center"><svg class="w-5 h-5 text-yellow-600 dark:text-yellow-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg></span>
+						<span class="flex-1">
+							<span class="font-semibold text-black dark:text-white">Déchets non ramassés</span>
+							<span class="block text-xs text-gray-500 dark:text-gray-400">Kasa-Vubu • il y a 1h</span>
+						</span>
+						<span class="text-xs text-red-600 dark:text-red-400 font-bold">Non résolu</span>
+					</li>
+					<li class="py-3 flex items-center gap-4">
+						<span class="inline-block w-8 h-8 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center"><svg class="w-5 h-5 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 9V7a5 5 0 00-10 0v2a2 2 0 00-2 2v7a2 2 0 002 2h10a2 2 0 002-2v-7a2 2 0 00-2-2z"/></svg></span>
+						<span class="flex-1">
+							<span class="font-semibold text-black dark:text-white">Fuite d'eau</span>
+							<span class="block text-xs text-gray-500 dark:text-gray-400">Barumbu • il y a 30min</span>
+						</span>
+						<span class="text-xs text-green-600 dark:text-green-400 font-bold">Résolu</span>
+					</li>
+				</ul>
+			</div>
+		</section>
+	</main>
+		<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+		<script type="module" src="assets/js/main.js"></script>
+		<script>
+			// Splash screen hide
+			window.addEventListener('load', () => {
+				setTimeout(() => {
+					document.getElementById('splash').style.display = 'none';
+				}, 1200);
+			});
+			// Service worker registration
+			if ('serviceWorker' in navigator) {
+				window.addEventListener('load', function() {
+					navigator.serviceWorker.register('assets/js/sw.js');
+				});
+			}
+		</script>
+</body>
+</html>

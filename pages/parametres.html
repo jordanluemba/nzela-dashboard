@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Paramètres - Dashboard NZELA</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+        }
+    </script>
+</head>
+<body id="mainBody" class="bg-white dark:bg-gray-900 min-h-screen">
+    <div id="header-container"></div>
+    <main class="flex flex-col md:flex-row w-full min-h-screen bg-white dark:bg-gray-900 transition-colors">
+        <div id="sidebar-container"></div>
+        <section class="flex-1 p-6 overflow-x-auto">
+            <h1 class="text-2xl font-bold mb-6 text-black dark:text-white">Paramètres</h1>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+                <div class="rounded-2xl shadow-lg p-6 bg-white/70 dark:bg-gray-800/70 backdrop-blur-lg border border-gray-200 dark:border-gray-700 flex flex-col gap-4">
+                    <div class="flex items-center gap-3 mb-2">
+                        <span class="inline-block bg-blue-100 dark:bg-blue-900 p-3 rounded-full">
+                            <svg class="w-6 h-6 text-blue-500 dark:text-blue-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 6h16M4 10h16M4 14h16"/></svg>
+                        </span>
+                        <h2 class="text-lg font-bold text-black dark:text-white">Catégories de problèmes</h2>
+                    </div>
+                    <form id="categorieForm" class="flex gap-2 mb-2">
+                        <input type="text" class="border rounded px-3 py-2 dark:bg-gray-900 dark:text-white" placeholder="Nouvelle catégorie" required>
+                        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Ajouter</button>
+                    </form>
+                    <ul id="categorie-list" class="mb-2 flex flex-col gap-3">
+                        <li class="flex items-center gap-2 dark:text-white">Route <button class="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600">Supprimer</button></li>
+                        <li class="flex items-center gap-2 dark:text-white">Caniveau <button class="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600">Supprimer</button></li>
+                        <li class="flex items-center gap-2 dark:text-white">Déchets <button class="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600">Supprimer</button></li>
+                    </ul>
+                </div>
+                <div class="rounded-2xl shadow-lg p-6 bg-white/70 dark:bg-gray-800/70 backdrop-blur-lg border border-gray-200 dark:border-gray-700 flex flex-col gap-4">
+                    <div class="flex items-center gap-3 mb-2">
+                        <span class="inline-block bg-green-100 dark:bg-green-900 p-3 rounded-full">
+                            <svg class="w-6 h-6 text-green-500 dark:text-green-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+                        </span>
+                        <h2 class="text-lg font-bold text-black dark:text-white">Communes/Villes</h2>
+                    </div>
+                    <form id="communeForm" class="flex gap-2 mb-2">
+                        <input type="text" class="border rounded px-3 py-2 dark:bg-gray-900 dark:text-white" placeholder="Nouvelle commune/ville" required>
+                        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Ajouter</button>
+                    </form>
+                    <ul id="commune-list" class="mb-2 flex flex-col gap-3">
+                        <li class="flex items-center gap-2 dark:text-white">Gombe <button class="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600">Supprimer</button></li>
+                        <li class="flex items-center gap-2 dark:text-white">Kasa-Vubu <button class="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600">Supprimer</button></li>
+                        <li class="flex items-center gap-2 dark:text-white">Barumbu <button class="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600">Supprimer</button></li>
+                    </ul>
+                </div>
+                <div class="rounded-2xl shadow-lg p-6 bg-white/70 dark:bg-gray-800/70 backdrop-blur-lg border border-gray-200 dark:border-gray-700 flex flex-col gap-4">
+                    <div class="flex items-center gap-3 mb-2">
+                        <span class="inline-block bg-purple-100 dark:bg-purple-900 p-3 rounded-full">
+                            <svg class="w-6 h-6 text-purple-500 dark:text-purple-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="4"/></svg>
+                        </span>
+                        <h2 class="text-lg font-bold text-black dark:text-white">Configuration</h2>
+                    </div>
+                    <form class="flex flex-col gap-4">
+                        <input type="text" class="border rounded px-3 py-2 dark:bg-gray-900 dark:text-white" placeholder="Clé API Google Maps">
+                        <input type="text" class="border rounded px-3 py-2 dark:bg-gray-900 dark:text-white" placeholder="URL stockage Cloud">
+                        <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">Enregistrer</button>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </main>
+    <script type="module" src="../assets/js/main.js"></script>
+    <script>
+        // Ajout/Suppression dynamique (test)
+        document.addEventListener('DOMContentLoaded', function() {
+            // Catégories
+            const catForm = document.getElementById('categorieForm');
+            const catList = document.getElementById('categorie-list');
+            if (catForm && catList) {
+                catForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    const input = catForm.querySelector('input');
+                    const li = document.createElement('li');
+                    li.className = 'flex items-center gap-2 dark:text-white';
+                    li.innerHTML = `${input.value} <button class='bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600'>Supprimer</button>`;
+                    catList.appendChild(li);
+                    input.value = '';
+                });
+                catList.addEventListener('click', function(e) {
+                    if (e.target.tagName === 'BUTTON') e.target.parentElement.remove();
+                });
+            }
+            // Communes
+            const comForm = document.getElementById('communeForm');
+            const comList = document.getElementById('commune-list');
+            if (comForm && comList) {
+                comForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    const input = comForm.querySelector('input');
+                    const li = document.createElement('li');
+                    li.className = 'flex items-center gap-2 dark:text-white';
+                    li.innerHTML = `${input.value} <button class='bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600'>Supprimer</button>`;
+                    comList.appendChild(li);
+                    input.value = '';
+                });
+                comList.addEventListener('click', function(e) {
+                    if (e.target.tagName === 'BUTTON') e.target.parentElement.remove();
+                });
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notifications - Dashboard NZELA</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+        }
+    </script>
+</head>
+<body id="mainBody" class="bg-white dark:bg-gray-900 min-h-screen">
+    <div id="header-container"></div>
+    <main class="flex flex-col md:flex-row w-full min-h-screen bg-white dark:bg-gray-900 transition-colors">
+        <div id="sidebar-container"></div>
+        <section class="flex-1 p-6 overflow-x-auto">
+            <h1 class="text-2xl font-bold mb-6 text-black dark:text-white">Notifications</h1>
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow p-6 mb-8">
+                <h2 class="text-xl font-semibold mb-4 text-black dark:text-white">Historique des notifications envoyées</h2>
+                <ul id="notif-list" class="divide-y divide-gray-200 dark:divide-gray-700">
+                    <li class="py-3 flex items-center gap-4 dark:text-white">
+                        <span class="font-semibold">Votre problème est en cours de traitement</span>
+                        <span class="text-xs text-gray-500 dark:text-gray-300 ml-auto">il y a 2h</span>
+                    </li>
+                    <li class="py-3 flex items-center gap-4 dark:text-white">
+                        <span class="font-semibold">Travaux terminés à Limete</span>
+                        <span class="text-xs text-gray-500 dark:text-gray-300 ml-auto">il y a 1h</span>
+                    </li>
+                    <!-- Autres notifications dynamiques -->
+                </ul>
+            </div>
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow p-6 mb-8">
+                <h2 class="text-xl font-semibold mb-4 text-black dark:text-white">Envoyer une alerte générale</h2>
+                <form id="alertForm" class="flex flex-col gap-4">
+                    <input type="text" class="border rounded px-3 py-2 dark:bg-gray-900 dark:text-white" placeholder="Message d'alerte" required>
+                    <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Envoyer</button>
+                </form>
+            </div>
+        </section>
+    </main>
+    <script type="module" src="../assets/js/main.js"></script>
+    <script>
+        // Ajout dynamique d'une notification (test)
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('alertForm');
+            const notifList = document.getElementById('notif-list');
+            if (form && notifList) {
+                form.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    const input = form.querySelector('input');
+                    const message = input.value;
+                    const li = document.createElement('li');
+                    li.className = 'py-3 flex items-center gap-4 dark:text-white';
+                    li.innerHTML = `<span class='font-semibold'>${message}</span><span class='text-xs text-gray-500 dark:text-gray-300 ml-auto'>à l'instant</span>`;
+                    notifList.prepend(li);
+                    form.reset();
+                });
+            }
+        });
+    </script>
+</body>
+</html>
